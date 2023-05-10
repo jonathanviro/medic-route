@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">medic-route</string>
+    <string name="login">Iniciar Sesión</string>
+    <string name="not_account">No tienes cuenta?</string>
+    <string name="sign_up"><u>Regístrate</u></string>
+</resources>
