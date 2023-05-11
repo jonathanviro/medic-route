@@ -61,4 +61,5 @@
     <color name="md_theme_dark_surfaceTint">#82D996</color>
     <color name="md_theme_dark_outlineVariant">#414941</color>
     <color name="md_theme_dark_scrim">#000000</color>
+    <color name="background_medic_route">#0B6D36</color>
 </resources>
