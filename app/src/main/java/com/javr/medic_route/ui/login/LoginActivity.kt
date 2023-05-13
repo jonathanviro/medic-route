@@ -3,10 +3,11 @@ package com.javr.medic_route.ui.login
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.javr.medic_route.R
 import com.javr.medic_route.core.Global
 import com.javr.medic_route.core.Validator
 import com.javr.medic_route.databinding.ActivityLoginBinding
-import com.javr.medic_route.ui.signup.SignupPacienteActivity
+import com.javr.medic_route.ui.menus.TipoUsuarioActivity
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
@@ -22,7 +23,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun initComponents() {
         //Watcher Errores
-        Global.setErrorInTextInputLayout(binding.etCedula, binding.tilCedula)
+        Global.setErrorInTextInputLayout(binding.etCorreo, binding.tilCorreo)
         Global.setErrorInTextInputLayout(binding.etPassword, binding.tilPassword)
     }
 
@@ -44,23 +45,27 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun goToSignup() {
-        val intent = Intent(this, SignupPacienteActivity::class.java)
-        startActivity(intent)
+        startActivity(Intent(this, TipoUsuarioActivity::class.java))
     }
 
     private fun validarFormulario(): Boolean {
-        if (binding.etCedula.text.toString().isNullOrEmpty()) {
-            Global.setErrorInTextInputLayout(binding.tilCedula, "No ha ingresado su cédula")
+        if (binding.etCorreo.text.toString().isNullOrEmpty()) {
+            Global.setErrorInTextInputLayout(binding.tilCorreo, this.getString(R.string.not_insert_email))
             return false
         }else{
-            if (!Validator.isValidCedula(binding.etCedula.text.toString())) {
-                Global.setErrorInTextInputLayout(binding.tilCedula, "Cédula invalida")
+            if (!Validator.isValidEmail(binding.etCorreo.text.toString())) {
+                Global.setErrorInTextInputLayout(binding.tilCorreo, this.getString(R.string.invalid_email))
                 return false
             }
         }
 
         if (binding.etPassword.text.toString().isNullOrEmpty()) {
-            Global.setErrorInTextInputLayout(binding.tilPassword, "No ha ingresado su contraseña")
+            Global.setErrorInTextInputLayout(binding.tilPassword, this.getString(R.string.not_insert_password))
+            return false
+        }
+
+        if(Validator.isValidPassword(binding.etPassword.text.toString())){
+            Global.setErrorInTextInputLayout(binding.tilPassword, this.getString(R.string.invalid_password))
             return false
         }
 
