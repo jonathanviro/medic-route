@@ -24,7 +24,7 @@ class SignupConsultorioActivity : AppCompatActivity() {
     private fun initListener() {
         binding.btnNext.setOnClickListener {
             val intent = Intent(this, SignupUserActivity::class.java)
-            intent.putExtra(SignupUserActivity.EXTRA_TIPO_USUARIO, "M")
+            intent.putExtra(SignupUserActivity.EXTRA_TIPO_USUARIO, "MEDICO")
             startActivity(intent)
         }
     }

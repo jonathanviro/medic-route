@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.provider.OpenableColumns
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
@@ -13,6 +14,9 @@ import com.javr.medic_route.R
 import com.javr.medic_route.core.Global
 import com.javr.medic_route.core.Validator
 import com.javr.medic_route.databinding.ActivitySignupUserBinding
+import com.javr.medic_route.data.network.firebase.AuthProvider
+import com.javr.medic_route.data.network.firebase.UsuarioProvider
+import com.javr.medic_route.data.network.model.Usuario
 import com.javr.medic_route.ui.toolbar.Toolbar
 
 class SignupUserActivity : AppCompatActivity() {
@@ -22,6 +26,8 @@ class SignupUserActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySignupUserBinding
     private lateinit var tipoUsuario: String
+    private val authProvider = AuthProvider()
+    private val usuarioProvider = UsuarioProvider()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,8 +44,8 @@ class SignupUserActivity : AppCompatActivity() {
     private fun initComponents() {
         iniWatchers()
 
-        if (tipoUsuario.equals("P")) {
-            Toolbar().showToolbar(this, "Registro de Paciente", true)
+        if (tipoUsuario.equals("PACIENTE")) {
+            Toolbar().showToolbar(this, "Registro de Usuario", true)
             binding.llUploadPdf.visibility = View.GONE
             binding.llDownloadPdf.visibility = View.GONE
         } else {
@@ -74,7 +80,32 @@ class SignupUserActivity : AppCompatActivity() {
 
     private fun goToVistaUsuario() {
         if (validarFormulario()) {
+            authProvider.registrer(
+                binding.etCorreo.text.toString(),
+                binding.etPassword.text.toString()
+            ).addOnCompleteListener {
+                if (it.isSuccessful){
+                    val usuario = Usuario(
+                        id = authProvider.getId(),
+                        nombres = binding.etNombres.text.toString(),
+                        apellidos = binding.etApellidos.text.toString(),
+                        cedula = binding.etCedula.text.toString(),
+                        email = binding.etCorreo.text.toString(),
+                        telefono = binding.etTelefono.text.toString(),
+                        sexo = binding.tvSexo.text.toString(),
+                        tipoUsuario = tipoUsuario)
 
+                    usuarioProvider.create(usuario).addOnCompleteListener {
+                        if(it.isSuccessful){
+                            Toast.makeText(this@SignupUserActivity, "REGISTRO EXITOSO", Toast.LENGTH_LONG).show()
+                        }else{
+                            Log.e("FIREBASE", "Erro almacenando los datos del usuario. ${it.exception.toString()}")
+                        }
+                    }
+                }else{
+                    Log.e("FIREBASE", "Registro fallido ${it.exception.toString()}")
+                }
+            }
         }
     }
 
@@ -144,12 +175,18 @@ class SignupUserActivity : AppCompatActivity() {
         }
 
         if (binding.etPassword.text.toString().isNullOrEmpty()) {
-            Global.setErrorInTextInputLayout(binding.tilPassword, this.getString(R.string.not_insert_password))
+            Global.setErrorInTextInputLayout(
+                binding.tilPassword,
+                this.getString(R.string.not_insert_password)
+            )
             return false
         }
 
         if (Validator.isValidPassword(binding.etPassword.text.toString())) {
-            Global.setErrorInTextInputLayout(binding.tilPassword, this.getString(R.string.invalid_password))
+            Global.setErrorInTextInputLayout(
+                binding.tilPassword,
+                this.getString(R.string.invalid_password)
+            )
             return false
         }
 

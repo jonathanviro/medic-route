@@ -28,7 +28,7 @@ class TipoUsuarioActivity : AppCompatActivity() {
     private fun initListener() {
         binding.cvPaciente.setOnClickListener {
             val intent = Intent(this, SignupUserActivity::class.java)
-            intent.putExtra(SignupUserActivity.EXTRA_TIPO_USUARIO, "P")
+            intent.putExtra(SignupUserActivity.EXTRA_TIPO_USUARIO, "PACIENTE")
             startActivity(intent)
         }
 
