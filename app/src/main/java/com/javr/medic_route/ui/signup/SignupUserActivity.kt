@@ -17,6 +17,7 @@ import com.javr.medic_route.databinding.ActivitySignupUserBinding
 import com.javr.medic_route.data.network.firebase.AuthProvider
 import com.javr.medic_route.data.network.firebase.UsuarioProvider
 import com.javr.medic_route.data.network.model.Usuario
+import com.javr.medic_route.ui.map.MapActivity
 import com.javr.medic_route.ui.toolbar.Toolbar
 
 class SignupUserActivity : AppCompatActivity() {
@@ -98,6 +99,7 @@ class SignupUserActivity : AppCompatActivity() {
                     usuarioProvider.create(usuario).addOnCompleteListener {
                         if(it.isSuccessful){
                             Toast.makeText(this@SignupUserActivity, "REGISTRO EXITOSO", Toast.LENGTH_LONG).show()
+                            goToMap()
                         }else{
                             Log.e("FIREBASE", "Erro almacenando los datos del usuario. ${it.exception.toString()}")
                         }
@@ -107,6 +109,12 @@ class SignupUserActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun goToMap() {
+        val intent = Intent(this, MapActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
     }
 
     private fun validarFormulario(): Boolean {
